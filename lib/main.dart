@@ -1,17 +1,84 @@
 import 'package:flutter/material.dart';
-import 'mainPage.dart';
+import 'http.dart';
+import 'adding.dart';
 
 void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  MyApp({Key? key}) : super(key: key);
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Phone books',
-      theme: ThemeData(primaryColor: Colors.pink),
-      home: mainpage(),
+      title: "Phone Book",
+      theme: ThemeData(
+        primarySwatch: Colors.pink
+      ),
+
+      home: mainHome(),
     );
   }
+}
+
+
+//Main Home
+class mainHome extends StatefulWidget {
+  const mainHome({Key? key}) : super(key: key);
+
+  @override
+  _mainHomeState createState() => _mainHomeState();
+}
+
+class _mainHomeState extends State<mainHome> {
+
+  late Future<PhoneData> futureData;
+
+  @override
+  void initState(){
+    super.initState();
+    futureData = fetchData();
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text("Phone Book"),
+        leading: add(context),
+      ),
+      body: Center(
+        child: FutureBuilder<PhoneData>(
+          future: futureData,
+          builder: (context, snapshot){
+            if (snapshot.hasData){
+              return Text(snapshot.data!.lname);
+            } else if (snapshot.hasError){
+              return Text("${snapshot.error}");
+            }
+            return CircularProgressIndicator();
+          },
+        ),
+      ),
+    );
+  }
+}
+
+
+Widget add(BuildContext context) {
+  return IconButton(
+      onPressed: () => {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => add_new()))
+      },
+      icon: Icon(Icons.add));
 }
