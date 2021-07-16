@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'http.dart';
+import 'Phonebook.dart';
 import 'adding.dart';
 
 void main() {
@@ -23,62 +23,52 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: Colors.pink
       ),
 
-      home: mainHome(),
+      home: MainPage(),
     );
   }
 }
 
 
 //Main Home
-class mainHome extends StatefulWidget {
-  const mainHome({Key? key}) : super(key: key);
+// class mainHome extends StatefulWidget {
+//   const mainHome({Key? key}) : super(key: key);
+//
+//   @override
+//   _mainHomeState createState() => _mainHomeState();
+// }
 
-  @override
-  _mainHomeState createState() => _mainHomeState();
-}
-
-class _mainHomeState extends State<mainHome> {
-
-  late Future<PhoneData> futureData;
-
-  @override
-  void initState(){
-    super.initState();
-    futureData = fetchData();
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text("Phone Book"),
-        leading: add(context),
-      ),
-      body: Center(
-        child: FutureBuilder<PhoneData>(
-          future: futureData,
-          builder: (context, snapshot){
-            if (snapshot.hasData){
-              return Text(snapshot.data!.lname);
-            } else if (snapshot.hasError){
-              return Text("${snapshot.error}");
-            }
-            return CircularProgressIndicator();
-          },
-        ),
-      ),
-    );
-  }
-}
-
-
-Widget add(BuildContext context) {
-  return IconButton(
-      onPressed: () => {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => add_new()))
-      },
-      icon: Icon(Icons.add));
-}
+// class _mainHomeState extends State<mainHome> {
+//
+//   late Future<PhoneData> futureData;
+//
+//   @override
+//   void initState(){
+//     super.initState();
+//     futureData = fetchData();
+//   }
+//
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         centerTitle: true,
+//         title: Text("Phone Book"),
+//         leading: add(context),
+//       ),
+//       body: Center(
+//         child: FutureBuilder<PhoneData>(
+//           future: futureData,
+//           builder: (context, snapshot){
+//             if (snapshot.hasData){
+//               return Text(snapshot.data!.lname);
+//             } else if (snapshot.hasError){
+//               return Text("${snapshot.error}");
+//             }
+//             return CircularProgressIndicator();
+//           },
+//         ),
+//       ),
+//     );
+//   }
+// }
