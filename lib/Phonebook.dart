@@ -60,6 +60,10 @@ class _MainPageState extends State<MainPage> {
         leading: add(context),
       ),
       body: dataList(),
+      floatingActionButton: FloatingActionButton(child: Icon(Icons.wifi_protected_setup),onPressed: ()=>{Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => super.widget))},),
     );
   }
 

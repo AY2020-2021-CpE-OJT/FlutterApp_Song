@@ -73,6 +73,11 @@ Widget input(BuildContext context) {
                     print("$fname $lname \n$phone_number");
                     postData(lname, fname, phone_number);
 
+                    //clear the text feild
+                    controllerOne.clear();
+                    controllerTwo.clear();
+                    controllerThree.clear();
+
                   },
                   child: Text("Add"),
                   style: ElevatedButton.styleFrom(primary: Colors.pink),
