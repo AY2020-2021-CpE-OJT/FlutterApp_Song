@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'PostData.dart';
 
-var lname = "", fname = "";
-var phone_number = "";
+
+var lname, fname;
+var phone_number;
 
 final controllerOne = TextEditingController();
 final controllerTwo = TextEditingController();
@@ -28,7 +31,7 @@ Widget input(BuildContext context) {
   return Center(
     child: Container(
       alignment: Alignment.topCenter,
-      padding: EdgeInsets.all(50),
+      padding: EdgeInsets.fromLTRB(10, 30, 10, 0),
       child: Container(
           child: Column(children: [
         //Name container
@@ -45,7 +48,7 @@ Widget input(BuildContext context) {
                 width: 340,
                 child: TextField(
                   decoration: InputDecoration(
-                      icon: Icon(Icons.phone),
+                      icon: PhoneIcon(context),
                       hintText: "Phone number",
                       hintStyle: TextStyle(color: Colors.grey)),
                   controller: controllerThree,
@@ -55,20 +58,21 @@ Widget input(BuildContext context) {
           ),
         ),
 
-            SizedBox(height: 10),
+            SizedBox(height: 20),
             // Add Button
             Container(
-              padding: EdgeInsets.fromLTRB(40, 20, 0, 0),
               child: ConstrainedBox(
-                constraints: BoxConstraints.tightFor(width: 300,height: 30),
+                constraints: BoxConstraints.tightFor(width: 400,height: 30),
                 child: ElevatedButton(
                   onPressed: (){
+                    //get value from the text
                     fname = controllerOne.text;
                     lname = controllerTwo.text;
-                    //get int value
                     phone_number = controllerThree.text;
                     //print the inserted Data
                     print("$fname $lname \n$phone_number");
+                    postData(lname, fname, phone_number);
+
                   },
                   child: Text("Add"),
                   style: ElevatedButton.styleFrom(primary: Colors.pink),
@@ -83,12 +87,13 @@ Widget input(BuildContext context) {
 
 Widget insertName(BuildContext context) {
   return Row(
+
     mainAxisAlignment: MainAxisAlignment.center,
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Container(
           padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
-          child: Icon(Icons.person_add, color: Colors.grey)),
+          child: personIcon(context)),
 
       SizedBox(width: 17),
       //name
@@ -113,4 +118,31 @@ Widget insertName(BuildContext context) {
           )),
     ],
   );
+}
+
+Widget personIcon(BuildContext context){
+  return Icon(Icons.person_add, color: Colors.pink);
+}
+
+Widget PhoneIcon(BuildContext context){
+  return Icon(Icons.phone,color: Colors.pink);
+}
+
+
+Future<PostData> postData(String lname, String fname, String phone_number) async {
+  final url = "https://enigmatic-fjord-21038.herokuapp.com/new";
+
+  //call http
+  final response = await http.post(Uri.parse(url), body: {
+    "lname": lname,
+    "fname": fname,
+    "phone_number": phone_number
+  });
+
+  if (response.statusCode == 201) {
+    final String responseString = response.body;
+    return postDataFromJson(responseString);
+  }
+
+  return postData(lname, fname, phone_number);
 }

@@ -1,16 +1,7 @@
-
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'adding.dart';
-
-//
-// //Make a request to the API
-// Future<http.Response> getDataFromAPI(){
-//   return http.get(Uri.parse("https://enigmatic-fjord-21038.herokuapp.com/"));
-// }
-//
+import 'addDataPage.dart';
 
 //Make class to restore the Data
 class MainPage extends StatefulWidget {
@@ -95,21 +86,16 @@ Widget individualData(item){
         child: ListTile(
           title: Row(
             children: <Widget>[
-              Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular((60/2))
-                ),
-              ),
-              SizedBox(width: 20,),
-              
               Column(crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+
+                  //display name
                   SizedBox(width: MediaQuery.of(context).size.width-140,
                   child: Text(fullName, style: TextStyle(fontSize: 17),)),
                   
-                  SizedBox(height: 10,),
+                  SizedBox(height: 10),
+
+                  //display phone number
                   Text(phoneNumber.toString(),style: TextStyle(color: Colors.grey),)
                 ],
               )
@@ -120,7 +106,7 @@ Widget individualData(item){
     );
 }
 
-  Widget add(BuildContext context) {
+Widget add(BuildContext context) {
     return IconButton(
         onPressed: () => {
           Navigator.push(
