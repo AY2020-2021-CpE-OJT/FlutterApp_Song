@@ -144,5 +144,5 @@ Future<PostData> postData(String lname, String fname, String phone_number) async
     return postDataFromJson(responseString);
   }
 
-  return postData(lname, fname, phone_number);
+  return postDataFromJson(response.body);
 }
