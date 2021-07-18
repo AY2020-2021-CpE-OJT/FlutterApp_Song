@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'PostData.dart';
+import '../CRUD/PostData.dart';
 
 
 var lname, fname;
@@ -77,6 +77,7 @@ Widget input(BuildContext context) {
                     controllerOne.clear();
                     controllerTwo.clear();
                     controllerThree.clear();
+                    popupDialog(context);
 
                   },
                   child: Text("Add"),
@@ -133,6 +134,16 @@ Widget PhoneIcon(BuildContext context){
   return Icon(Icons.phone,color: Colors.pink);
 }
 
+Widget popupDialog(BuildContext context){
+  return AlertDialog(
+    content: Center(
+      child: Text("It successfully added to the phone book!"),
+    ),
+    // actions: <Widget>[
+    //   TextButton(onPressed: ()=>{Navigator.pop(context)}, child: Text("Close", style: TextStyle(color: Colors.pink)),)
+    //],
+  );
+}
 
 Future<PostData> postData(String lname, String fname, String phone_number) async {
   final url = "https://enigmatic-fjord-21038.herokuapp.com/new";
@@ -151,3 +162,4 @@ Future<PostData> postData(String lname, String fname, String phone_number) async
 
   return postDataFromJson(response.body);
 }
+

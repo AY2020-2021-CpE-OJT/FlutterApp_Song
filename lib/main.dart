@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'Phonebook.dart';
-import 'addDataPage.dart';
+import 'Page/Phonebook.dart';
+import 'Page/addDataPage.dart';
 
 void main() {
   runApp(MyApp());

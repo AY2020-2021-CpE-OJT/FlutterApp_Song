@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import '../CRUD/deleteData.dart';
 import 'addDataPage.dart';
 
 //Make class to restore the Data
@@ -88,13 +89,14 @@ Widget individualData(item){
       child: Padding(
         padding: EdgeInsets.all(10.0),
         child: ListTile(
+          contentPadding: EdgeInsets.fromLTRB(10, 0, 0, 0),
           title: Row(
             children: <Widget>[
               Column(crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
 
                   //display name
-                  SizedBox(width: MediaQuery.of(context).size.width-140,
+                  SizedBox(width: MediaQuery.of(context).size.width-135,
                   child: Text(fullName, style: TextStyle(fontSize: 17),)),
                   
                   SizedBox(height: 10),
@@ -102,7 +104,14 @@ Widget individualData(item){
                   //display phone number
                   Text(phoneNumber.toString(),style: TextStyle(color: Colors.grey),)
                 ],
-              )
+              ),
+
+              // Edit data
+              IconButton(onPressed: (){}, icon: Icon(Icons.edit)),
+
+              //Delete button
+              IconButton(
+                  onPressed: () => {delete(phoneNumber)},icon: Icon(Icons.delete))
             ],
           ),
         ),
@@ -118,7 +127,19 @@ Widget add(BuildContext context) {
         },
         icon: Icon(Icons.add));
   }
-
-
 }
 
+
+Future<DeleteData> delete(String phoneNumber) async {
+  final url = "https://enigmatic-fjord-21038.herokuapp.com/delete/$phoneNumber";
+  
+  //call http
+  final response = await http.delete(Uri.parse(url),body: {"phone_number" : phoneNumber});
+  
+  if (response.statusCode == 200 || response.statusCode == 204){
+    return deleteDataFromJson("Deleted");
+  } else {
+    deleteDataFromJson("Failed to Delete");
+  }
+  return deleteDataFromJson(response.body);
+}
