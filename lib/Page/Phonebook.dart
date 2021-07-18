@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import '../CRUD/deleteData.dart';
 import 'addDataPage.dart';
+import '../Page/EditDataPage.dart';
 
 //Make class to restore the Data
 class MainPage extends StatefulWidget {
@@ -107,11 +107,17 @@ Widget individualData(item){
               ),
 
               // Edit data
-              IconButton(onPressed: (){}, icon: Icon(Icons.edit)),
+              IconButton(onPressed: (){
+
+                //move to Edit Page
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => edit(passedID: item['_id'], passedLname: item['lname'], passedFname: item['fname'], passedPhonenumber: item['phone_number'])));
+
+              }, icon: Icon(Icons.edit)),
 
               //Delete button
               IconButton(
-                  onPressed: () => {delete(phoneNumber)},icon: Icon(Icons.delete))
+                  onPressed: () => {delete(item['_id'])},icon: Icon(Icons.delete))
             ],
           ),
         ),
@@ -130,16 +136,16 @@ Widget add(BuildContext context) {
 }
 
 
-Future<DeleteData> delete(String phoneNumber) async {
-  final url = "https://enigmatic-fjord-21038.herokuapp.com/delete/$phoneNumber";
+void delete(String id) async {
+  final url = "https://enigmatic-fjord-21038.herokuapp.com/delete/$id";
   
   //call http
-  final response = await http.delete(Uri.parse(url),body: {"phone_number" : phoneNumber});
+  final response = await http.delete(Uri.parse(url));
   
   if (response.statusCode == 200 || response.statusCode == 204){
-    return deleteDataFromJson("Deleted");
+    return print("Deleted");
   } else {
-    deleteDataFromJson("Failed to Delete");
+    print("Failed to Delete");
   }
-  return deleteDataFromJson(response.body);
+  return print(response.body);
 }

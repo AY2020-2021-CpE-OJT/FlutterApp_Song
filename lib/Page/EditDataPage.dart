@@ -3,32 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../CRUD/editData.dart';
 
-
-var lname, fname;
-var phone_number;
+var lname,fname,phone_number;
 
 final controllerOne = TextEditingController();
 final controllerTwo = TextEditingController();
 final controllerThree = TextEditingController();
 
-class containData{
-  final String id;
-  final String lname;
-  final String fname;
-  final String phone_numer;
-
-  containData(this.id, this.lname, this.fname, this.phone_numer);
-}
-
 class edit extends StatelessWidget {
   //contain the passed data
-  final containData dataId;
-
+  final String passedID,passedLname,passedFname,passedPhonenumber;
   //get the data
-  const edit({Key? key, required this.dataId}) : super(key: key);
+  const edit({Key? key, required this.passedID, required this.passedLname,required this.passedFname, required this.passedPhonenumber}) : super(key: key);
+  //url
 
   //getting data from the PhoneBook page
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,12 +27,12 @@ class edit extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: input(containData),
+      body: input(passedID,passedFname,passedLname,passedPhonenumber),
     );
   }
 }
 
-Widget input(containData) {
+Widget input(String passedID, String passedFname, String passedLname, String passedPhonenumber) {
   return Center(
     child: Container(
       alignment: Alignment.topCenter,
@@ -53,7 +41,7 @@ Widget input(containData) {
           child: Column(children: [
             //Name container
             Container(
-                  child: insertName(containData.toString(lname),containData.toString(fname)),
+                  child: insertName(passedFname,passedLname),
             ),
             SizedBox(height: 30),
             //Phone number container
@@ -66,7 +54,7 @@ Widget input(containData) {
                     child: TextField(
                       decoration: InputDecoration(
                           icon: Icon(Icons.phone,color: Colors.pink),
-                          hintText: phone_number,
+                          hintText: passedPhonenumber,
                           hintStyle: TextStyle(color: Colors.grey)),
                       controller: controllerThree,
                     ),
@@ -79,16 +67,33 @@ Widget input(containData) {
             // Add Button
             Container(
               child: ConstrainedBox(
-                constraints: BoxConstraints.tightFor(width: 400,height: 30),
+                constraints: BoxConstraints.tightFor(width: 400,height: 40),
                 child: ElevatedButton(
                   onPressed: (){
 
                     //get value from the text
-                    fname = controllerOne.text;
-                    lname = controllerTwo.text;
-                    phone_number = controllerThree.text;
+                    if (controllerOne.text.isNotEmpty){
+                      fname = controllerOne.text;
+                    } else {
+                      fname = passedFname;
+                    }
+
+                    if (controllerTwo.text.isNotEmpty){
+                      lname = controllerTwo.text;
+                    } else {
+                     lname = passedLname;
+                    }
+
+                    if (controllerThree.text.isNotEmpty){
+                      phone_number = controllerThree.text;
+                    } else {
+                      phone_number = passedPhonenumber;
+                    }
                     //print the inserted Data
                     print("$fname $lname \n$phone_number");
+
+                    //updata data
+                    updateData(passedID,lname, fname, phone_number);
 
 
                     //clear the text feild
@@ -145,20 +150,19 @@ Widget insertName(String lname, String fname,) {
   );
 }
 
-// Update
-Future<EditData> editData(String lname,String fname, String phone_number) async {
-  final url = "https://enigmatic-fjord-21038.herokuapp.com/";
+//Update
+void updateData(String id, String lname,String fname, String phone_number) async {
+  final url = "https://enigmatic-fjord-21038.herokuapp.com/update/$id";
 
-  //call http
-  final response = await http.patch(Uri.parse(url), body: {
-    "lname": lname,
-    "fname": fname,
-    "phone_number": phone_number
+  final response = await http.patch(Uri.parse(url),body: {
+    "lname" : lname,
+    "fname" : fname,
+    "phone_number" : phone_number
   });
 
   if (response.statusCode == 200) {
-    return editDataFromJson("Updated");
+    return print("Updated");
   } else {
-    return editDataFromJson("Failed to update");
+    return print("Failed to update id : $id, $fname $lname, $phone_number \n${response.statusCode}");
   }
 }
