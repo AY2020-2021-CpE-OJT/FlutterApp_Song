@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'Page/Phonebook.dart';
-import 'Page/addDataPage.dart';
+import 'Page/Login Page.dart';
 
 void main() {
   runApp(MyApp());
@@ -23,7 +22,7 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: Colors.pink
       ),
 
-      home: MainPage(),
+      home: LoginPage(),
     );
   }
 }
