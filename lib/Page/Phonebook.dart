@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'addDataPage.dart';
@@ -6,7 +7,8 @@ import '../Page/EditDataPage.dart';
 
 //Make class to restore the Data
 class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+  final token;
+  const MainPage({Key? key, this.token}) : super(key: key);
 
   @override
   _MainPageState createState() => _MainPageState();
@@ -32,8 +34,14 @@ class _MainPageState extends State<MainPage> {
       isLoading = true;
     });
 
-    final url = "https://enigmatic-fjord-21038.herokuapp.com/";
-    var response = await http.get(Uri.parse(url), headers: {"Accept" : "application/json", "Access-Control_Allow_Origin" : "*"});
+    final token = widget.token.toString();
+    print(token);
+    final url = "https://contactbookapi.herokuapp.com/";
+    var response = await http.get(Uri.parse(url),
+        headers: {
+          //"Accept" : "application/json",
+          //"Access-Control_Allow_Origin" : "*",
+          "Authorization" : "Bearer $token"});
     if (response.statusCode == 200){
       var item = jsonDecode(response.body);
       print(item);
@@ -61,6 +69,7 @@ class _MainPageState extends State<MainPage> {
         leading: add(context),
       ),
       body: dataList(),
+      backgroundColor: Colors.grey,
       floatingActionButton: FloatingActionButton(child: Icon(Icons.wifi_protected_setup),onPressed: ()=>{Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -89,6 +98,12 @@ Widget individualData(item){
       child: Padding(
         padding: EdgeInsets.all(10.0),
         child: ListTile(
+          minVerticalPadding: 10
+          ,
+          leading: CircleAvatar(
+            child: Text(item['fname'][0] + item['lname'][0]),
+            backgroundColor: Colors.primaries[Random().nextInt(Colors.primaries.length)],
+          ),
           contentPadding: EdgeInsets.fromLTRB(10, 0, 0, 0),
           title: Row(
             children: <Widget>[
@@ -96,8 +111,8 @@ Widget individualData(item){
                 children: <Widget>[
 
                   //display name
-                  SizedBox(width: MediaQuery.of(context).size.width-135,
-                  child: Text(fullName, style: TextStyle(fontSize: 17),)),
+                  SizedBox(width: MediaQuery.of(context).size.width-190,
+                  child: Text(fullName, style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),)),
                   
                   SizedBox(height: 10),
 
@@ -111,7 +126,7 @@ Widget individualData(item){
 
                 //move to Edit Page
                 Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => edit(passedID: item['_id'], passedLname: item['lname'], passedFname: item['fname'], passedPhonenumber: item['phone_number'])));
+                    context, MaterialPageRoute(builder: (context) => edit(passedID: item['_id'], passedLname: item['lname'], passedFname: item['fname'], passedPhonenumber: item['phone_number']))).then((value) => setState((){}));
 
               }, icon: Icon(Icons.edit)),
 
