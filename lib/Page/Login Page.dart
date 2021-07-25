@@ -155,15 +155,3 @@ showAlertDialog (BuildContext context){
     },
   );
 }
-
-// Future<String> test (String api) async{
-//   List data = [];
-//   var item;
-//   final url = "https://contactbookapi.herokuapp.com/";
-//   final response = await http.get(Uri.parse(url),headers: { "Authorization" : "Bearer $api" });
-//
-//   item = response.body;
-//   //data = item;
-//   print(item);
-//   return api;
-// }

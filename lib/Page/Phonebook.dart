@@ -66,10 +66,10 @@ class _MainPageState extends State<MainPage> {
       appBar: AppBar(
         centerTitle: true,
         title: Text("Phone Book"),
-        leading: add(context),
+        leading: add(context,widget.token),
       ),
       body: dataList(),
-      backgroundColor: Colors.grey,
+      backgroundColor: Colors.grey[400],
       floatingActionButton: FloatingActionButton(child: Icon(Icons.wifi_protected_setup),onPressed: ()=>{Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -140,11 +140,11 @@ Widget individualData(item){
     );
 }
 
-Widget add(BuildContext context) {
+Widget add(BuildContext context, String token) {
     return IconButton(
-        onPressed: () => {
+        onPressed: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => add_new()))
+              context, MaterialPageRoute(builder: (context) => add_new(token: widget.token))).then((value) => setState((){fetchData();}));
         },
         icon: Icon(Icons.add));
   }

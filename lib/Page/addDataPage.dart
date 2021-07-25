@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import '../CRUD/PostData.dart';
-
 
 var lname, fname;
 var phone_number;
@@ -12,22 +10,28 @@ final controllerTwo = TextEditingController();
 final controllerThree = TextEditingController();
 
 class add_new extends StatelessWidget {
+  final token;
+  const add_new({Key? key, this.token}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(icon: Icon(Icons.arrow_back),onPressed: (){
+          Navigator.pop(context);
+        },),
         centerTitle: true,
         title: Text(
           "Adding new Contact",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: input(context),
+      body: input(context,token),
     );
   }
 }
 
-Widget input(BuildContext context) {
+Widget input(BuildContext context,String token) {
   return Center(
     child: Container(
       alignment: Alignment.topCenter,
@@ -71,7 +75,7 @@ Widget input(BuildContext context) {
                     phone_number = controllerThree.text;
                     //print the inserted Data
                     print("$fname $lname \n$phone_number");
-                    postData(lname, fname, phone_number);
+                    postData(lname, fname, phone_number,token);
 
                     //clear the text feild
                     controllerOne.clear();
@@ -145,21 +149,19 @@ Widget popupDialog(BuildContext context){
   );
 }
 
-Future<PostData> postData(String lname, String fname, String phone_number) async {
-  final url = "https://enigmatic-fjord-21038.herokuapp.com/new";
+void postData(String lname, String fname, String phone_number,String token) async {
+  final url = "https://contactbookapi.herokuapp.com/new";
 
   //call http
   final response = await http.post(Uri.parse(url), body: {
     "lname": lname,
     "fname": fname,
     "phone_number": phone_number
-  });
+  },headers: {"Authorization": "Bearer $token"});
 
   if (response.statusCode == 201) {
     final String responseString = response.body;
-    return postDataFromJson(responseString);
+    print(responseString);
   }
-
-  return postDataFromJson(response.body);
 }
 
