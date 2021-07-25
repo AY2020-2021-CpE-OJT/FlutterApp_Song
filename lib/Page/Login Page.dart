@@ -115,8 +115,10 @@ void loginAPI(String name, String password, BuildContext context) async {
   });
   var item = jsonDecode(response.body);
   if (item['user']['message'] != "User doesn't Exist!"){
-    showAlertDialog(context);
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => MainPage(token : item['token'])));
   } else {
+    showAlertDialog(context);
   }
 
 }
@@ -125,12 +127,20 @@ showAlertDialog (BuildContext context){
   // set up the button
   Widget okButton = TextButton(
     child: Text("OK"),
-    onPressed: () { },
+    onPressed: () { Navigator.pop(context); },
   );
 
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
-    title: Text("Warning!"),
+    title: Container(
+      child: Row(
+        children: [
+          Icon(Icons.warning,color: Colors.yellow,),
+          SizedBox(width: 10,),
+          Text("Warning!")
+        ],
+      ),
+    ),
 
     content: Text("User is not Exist!"),
     actions: [
