@@ -81,7 +81,8 @@ Widget input(BuildContext context,String token) {
                     controllerOne.clear();
                     controllerTwo.clear();
                     controllerThree.clear();
-                    popupDialog(context);
+
+                    showSnackbar(context);
 
                   },
                   child: Text("Add"),
@@ -93,6 +94,11 @@ Widget input(BuildContext context,String token) {
           ),
     ),
   );
+}
+
+showSnackbar(BuildContext context){
+  final toast = SnackBar(content: Text("Successfully Add!"));
+  ScaffoldMessenger.of(context).showSnackBar(toast);
 }
 
 Widget insertName(BuildContext context) {
@@ -136,17 +142,6 @@ Widget personIcon(BuildContext context){
 
 Widget PhoneIcon(BuildContext context){
   return Icon(Icons.phone,color: Colors.pink);
-}
-
-Widget popupDialog(BuildContext context){
-  return AlertDialog(
-    content: Center(
-      child: Text("It successfully added to the phone book!"),
-    ),
-    // actions: <Widget>[
-    //   TextButton(onPressed: ()=>{Navigator.pop(context)}, child: Text("Close", style: TextStyle(color: Colors.pink)),)
-    //],
-  );
 }
 
 void postData(String lname, String fname, String phone_number,String token) async {
