@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart'as http;
 
 var lname, fname;
 var phone_number;
@@ -9,10 +9,16 @@ final controllerOne = TextEditingController();
 final controllerTwo = TextEditingController();
 final controllerThree = TextEditingController();
 
-class add_new extends StatelessWidget {
+
+class add_new extends StatefulWidget {
   final token;
   const add_new({Key? key, this.token}) : super(key: key);
 
+  @override
+  _add_newState createState() => _add_newState();
+}
+
+class _add_newState extends State<add_new> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +32,7 @@ class add_new extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: input(context,token),
+      body: input(context,widget.token),
     );
   }
 }
@@ -38,29 +44,43 @@ Widget input(BuildContext context,String token) {
       padding: EdgeInsets.fromLTRB(10, 30, 10, 0),
       child: Container(
           child: Column(children: [
-        //Name container
-        Container(
-          child: insertName(context),
-        ),
-        SizedBox(height: 30),
-        //Phone number container
-        Container(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 340,
-                child: TextField(
-                  decoration: InputDecoration(
-                      icon: PhoneIcon(context),
-                      hintText: "Phone number",
-                      hintStyle: TextStyle(color: Colors.grey)),
-                  controller: controllerThree,
-                ),
+            //Name container
+            Container(
+              child: insertName(context),
+            ),
+            SizedBox(height: 30),
+            //Phone number container
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 300,
+                    child: TextField(
+                      decoration: InputDecoration(
+                          icon: PhoneIcon(context),
+                          hintText: "Phone number",
+                          hintStyle: TextStyle(color: Colors.grey)),
+                      controller: controllerThree,
+                    ),
+                  ),
+                  SizedBox(width: 10,),
+                  Container(
+                    width: 40,
+                    height: 40,
+                    child: Ink(
+                    decoration: ShapeDecoration(
+                      color: Colors.pink,
+                      shape: CircleBorder(),
+                    ),
+                    child: IconButton(
+                      icon: Icon(Icons.add,color: Colors.white,),
+                      onPressed: () { },
+                    ),
+                  ),)
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
 
             SizedBox(height: 20),
             // Add Button
@@ -90,8 +110,8 @@ Widget input(BuildContext context,String token) {
                 ),
               ),
             ),
-      ]) //Column
-          ),
+          ]) //Column
+      ),
     ),
   );
 }
@@ -119,16 +139,16 @@ Widget insertName(BuildContext context) {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextField(
-                  decoration: InputDecoration(
-                      hintText: "First name",
-                      hintStyle: TextStyle(color: Colors.grey[600])),
-              controller: controllerOne,
+                decoration: InputDecoration(
+                    hintText: "First name",
+                    hintStyle: TextStyle(color: Colors.grey[600])),
+                controller: controllerOne,
               ),
               TextField(
-                  decoration: InputDecoration(
-                      hintText: "Last name",
-                      hintStyle: TextStyle(color: Colors.grey[600])),
-              controller: controllerTwo,
+                decoration: InputDecoration(
+                    hintText: "Last name",
+                    hintStyle: TextStyle(color: Colors.grey[600])),
+                controller: controllerTwo,
               )
             ],
           )),
