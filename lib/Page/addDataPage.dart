@@ -9,8 +9,7 @@ List phone_number = [];
 
 final controllerOne = TextEditingController();
 final controllerTwo = TextEditingController();
-final List<TextEditingController> controllerThree = [TextEditingController()];
-
+List<TextEditingController> controllerThree = <TextEditingController>[TextEditingController()];
 
 class add_new extends StatefulWidget {
   final token;
@@ -25,6 +24,7 @@ class _add_newState extends State<add_new> {
 
   @override
   Widget build(BuildContext context) {
+
     List<Widget> _phoneNumberField = new List.generate(_count, (int i) => new ContactColumn());
     
     return Scaffold(
@@ -318,9 +318,25 @@ class ContactColumn extends StatefulWidget {
 }
 
 class _ContactColumnState extends State<ContactColumn> {
+  int controller = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    this.setController();
+  }
+
+  setController() async{
+    setState(() {
+      controller += 1;
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    return new Container(
+    return Container(
       width: 170,
       child:  Row(
         children: [
