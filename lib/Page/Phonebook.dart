@@ -4,6 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'addDataPage.dart';
 import '../Page/EditDataPage.dart';
+import 'package:animations/animations.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+
+RefreshController _refreshController =
+RefreshController(initialRefresh: false);
 
 //Make class to restore the Data
 class MainPage extends StatefulWidget {
@@ -56,26 +61,64 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
+  Widget FAB(BuildContext context) => OpenContainer(
+        transitionDuration: Duration(seconds: 2),
+        closedShape: CircleBorder(),
+        closedBuilder: (context, openContainer) => Container(
+          decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.pink),
+          height: 56,
+          width: 56,
+          child: Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
+        ),
+        openBuilder: (context, _) => add_new(token: widget.token),
+      );
+
+
+  //refresh related function
+  void _onRefresh() async{
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 0));
+    setState(() {
+      fetchData();
+    });
+    // if failed,use refreshFailed()
+    _refreshController.refreshCompleted();
+  }
+
+  //refresh related function
+  void _onLoading() async{
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 400));
+      setState(() {
+        fetchData();
+      });
+    _refreshController.loadComplete();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text("Phone Book"),
-        leading: add(context, widget.token),
-      ),
-      body: dataList(),
-      backgroundColor: Colors.grey[400],
-      // floatingActionButton: FloatingActionButton(
-      //   child: Icon(Icons.wifi_protected_setup),
-      //   onPressed: () => {
-      //     Navigator.pushReplacement(
-      //         context,
-      //         MaterialPageRoute(
-      //             builder: (BuildContext context) => super.widget))
-      //   },
-      // ),
-    );
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text("Phone Book"),
+        ),
+        body:
+        //refresh
+        SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: false,
+          controller: _refreshController,
+          onRefresh: _onRefresh,
+          onLoading: _onLoading,
+
+          //showing data
+          child: dataList(),),
+        //dataList(),
+        backgroundColor: Colors.grey[400],
+        floatingActionButton: FAB(context));
   }
 
   Widget dataList() {
@@ -87,31 +130,42 @@ class _MainPageState extends State<MainPage> {
         ),
       );
     }
-    return ListView.builder(
-        itemCount: data.length,
-        itemBuilder: (context, index) {
-          return individualData(data[index]);
-        });
+    return
+        ListView.builder(
+            itemCount: data.length,
+            itemBuilder: (context, index) {
+              return individualData(data[index]);
+            });
   }
 
+
+  //contain data
   Widget individualData(item) {
     var fullName = item['fname'] + " " + item['lname'];
     var phoneNumber = item['phone_number'];
 
+  //Snack bar
+    showSnackbar(BuildContext context,String message){
+      final toast = SnackBar(content: Text("$message"));
+      ScaffoldMessenger.of(context).showSnackBar(toast);
+    }
+
+    //Alert message
     showAlertDialog(BuildContext context, String id, String token) {
       // set up the button
       Widget okButton = TextButton(
         child: Text("OK"),
         onPressed: () {
           delete(id, token);
-          Navigator.pop(context);
           fetchData();
+          Navigator.pop(context);
+          showSnackbar(context, "Succesfully Delete!");
         },
       );
       Widget cancelButton = TextButton(
           onPressed: () {
-            Navigator.pop(context);
             fetchData();
+            Navigator.pop(context);
           },
           child: Text("cancel"));
 
@@ -143,6 +197,7 @@ class _MainPageState extends State<MainPage> {
       );
     }
 
+    //swiping function
     return Dismissible(
         key: UniqueKey(),
 
@@ -179,8 +234,9 @@ class _MainPageState extends State<MainPage> {
           ),
         ),
         onDismissed: (DismissDirection direction) => {
-              if (direction == DismissDirection.endToStart)
-                {showAlertDialog(context, item['_id'], widget.token)}
+              if (direction == DismissDirection.endToStart){
+                showAlertDialog(context, item['_id'], widget.token),
+                }
               else
                 {
                   Navigator.push(
@@ -237,21 +293,40 @@ class _MainPageState extends State<MainPage> {
         ));
   }
 
+  // go to add page
   Widget add(BuildContext context, String token) {
     return IconButton(
         onPressed: () {
           Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => add_new(token: widget.token)))
-              .then((value) => setState(() {
-                    fetchData();
-                  }));
+              context,
+              PageRouteBuilder(
+                  transitionDuration: Duration(seconds: 1),
+                  transitionsBuilder:
+                      (context, animation, animationTime, child) {
+                    animation = CurvedAnimation(
+                        parent: animation, curve: Curves.decelerate);
+                    return ScaleTransition(
+                        alignment: Alignment.topLeft,
+                        child: child,
+                        scale: animation);
+                  },
+                  pageBuilder: (context, animation, animationTime) {
+                    return add_new(
+                      token: widget.token,
+                    );
+                  })
+
+              // MaterialPageRoute(
+              //     builder: (context) => add_new(token: widget.token))
+              ).then((value) => setState(() {
+                fetchData();
+              }));
         },
         icon: Icon(Icons.add));
   }
 }
 
+//delete api
 void delete(String id, String token) async {
   final url = "https://contactbookapi.herokuapp.com/delete/$id";
 

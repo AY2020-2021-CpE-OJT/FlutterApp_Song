@@ -116,7 +116,7 @@ void loginAPI(String name, String password, BuildContext context) async {
   var item = jsonDecode(response.body);
   if (item['user']['message'] != "User doesn't Exist!"){
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => MainPage(token : item['token'])));
+        context, MaterialPageRoute(builder: (context) => MainPage(token: item['token'],)));
   } else {
     showAlertDialog(context);
   }
