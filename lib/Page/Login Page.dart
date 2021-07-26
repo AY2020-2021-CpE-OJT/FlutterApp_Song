@@ -69,6 +69,7 @@ Widget login(BuildContext context) {
                   child: (TextField(
                     decoration:
                         InputDecoration(hintText: "Enter your password"),
+                    obscureText: true,
                     controller: passwordController,
                   )),
                 )

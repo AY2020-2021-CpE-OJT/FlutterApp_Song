@@ -281,7 +281,7 @@ class _MainPageState extends State<MainPage> {
 
                       //display phone number
                       Text(
-                        phoneNumber.toString(),
+                        phoneNumber.toString().replaceAll('[', '📞 ').replaceAll(',', '\n📞 ').replaceAll(']', ' '),
                         style: TextStyle(color: Colors.grey),
                       )
                     ],
