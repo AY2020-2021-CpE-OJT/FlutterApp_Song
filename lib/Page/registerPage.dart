@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -40,7 +42,7 @@ Widget Register(BuildContext context) {
                 Container(
                     width: 300,
                     child: (TextField(
-                      decoration: InputDecoration(hintText: "Enter your name"),
+                      decoration: InputDecoration(labelText: "Enter your name"),
                       controller: nameController,
                     ))),
               ],
@@ -62,7 +64,7 @@ Widget Register(BuildContext context) {
                   width: 300,
                   child: (TextField(
                     decoration:
-                    InputDecoration(hintText: "Enter your password"),
+                    InputDecoration(labelText: "Enter your password"),
                     controller: passwordController,
                   )),
                 )
@@ -78,6 +80,7 @@ Widget Register(BuildContext context) {
                   name = nameController.text;
                   password = passwordController.text;
                   print(name + " " + password);
+                  registerAPI(context,name,password);
                 },
                 child: Text("Sign up"),
 
@@ -88,4 +91,21 @@ Widget Register(BuildContext context) {
       ),
     ),
   );
+}
+
+void registerAPI(BuildContext context,String name, String password) async{
+  final url = "https://contactbookapi.herokuapp.com/token/register";
+  final response = await http.post(Uri.parse(url),body: {
+    "name" : name,
+    "password" : password
+  });
+  var item = jsonDecode(response.body);
+  final toast = SnackBar(content: Text("Successfully registered!"));
+  ScaffoldMessenger.of(context).showSnackBar(toast);
+  print(item);
+}
+
+showSnackbar(BuildContext context){
+  final toast = SnackBar(content: Text("Successfully registered!"));
+  ScaffoldMessenger.of(context).showSnackBar(toast);
 }

@@ -53,8 +53,11 @@ Widget input(BuildContext context,String token) {
                 child: TextField(
                   decoration: InputDecoration(
                       icon: PhoneIcon(context),
-                      hintText: "Phone number",
-                      hintStyle: TextStyle(color: Colors.grey)),
+                      labelText: "Phone number",
+                      labelStyle: TextStyle(color: Colors.pink),
+                  ),keyboardType: TextInputType.number,
+
+
                   controller: controllerThree,
                 ),
               ),

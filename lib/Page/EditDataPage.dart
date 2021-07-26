@@ -26,12 +26,12 @@ class edit extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: input(passedID,passedFname,passedLname,passedPhonenumber),
+      body: input(context,passedID,passedFname,passedLname,passedPhonenumber),
     );
   }
 }
 
-Widget input(String passedID, String passedFname, String passedLname, String passedPhonenumber) {
+Widget input(BuildContext context,String passedID, String passedFname, String passedLname, String passedPhonenumber) {
   return Center(
     child: Container(
       alignment: Alignment.topCenter,
@@ -92,7 +92,7 @@ Widget input(String passedID, String passedFname, String passedLname, String pas
                     print("$fname $lname \n$phone_number");
 
                     //updata data
-                    updateData(passedID,lname, fname, phone_number);
+                    updateData(context,passedID,lname, fname, phone_number);
 
 
                     //clear the text feild
@@ -150,18 +150,65 @@ Widget insertName(String lname, String fname,) {
 }
 
 //Update
-void updateData(String id, String lname,String fname, String phone_number) async {
+void updateData(BuildContext context,String id, String lname,String fname, String phone_number) async {
   final url = "https://enigmatic-fjord-21038.herokuapp.com/update/$id";
 
   final response = await http.patch(Uri.parse(url),body: {
     "lname" : lname,
     "fname" : fname,
     "phone_number" : phone_number
-  });
+   },//headers: {"Authorization": "Bearer $token"}
+  );
 
   if (response.statusCode == 200) {
+    showSnackbar(context, "Updated!");
     return print("Updated");
   } else {
+    showAlertDialog(context,"Failed to update!");
+
     return print("Failed to update id : $id, $fname $lname, $phone_number \n${response.statusCode}");
   }
+}
+
+//Alert message
+showAlertDialog(BuildContext context,String message) {
+  // set up the button
+  Widget okButton = TextButton(
+    child: Text("OK"),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Container(
+      child: Row(
+        children: [
+          Icon(
+            Icons.warning,
+            color: Colors.red,
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          Text("Warning!")
+        ],
+      ),
+    ),
+    content: Text(message),
+    actions: [okButton],
+  );
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
+showSnackbar(BuildContext context,String message){
+  final toast = SnackBar(content: Text("$message"));
+  ScaffoldMessenger.of(context).showSnackBar(toast);
 }

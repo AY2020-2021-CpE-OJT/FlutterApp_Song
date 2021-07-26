@@ -62,7 +62,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget FAB(BuildContext context) => OpenContainer(
-        transitionDuration: Duration(seconds: 2),
+        transitionDuration: Duration(milliseconds: 800),
         closedShape: CircleBorder(),
         closedBuilder: (context, openContainer) => Container(
           decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.pink),
@@ -246,7 +246,8 @@ class _MainPageState extends State<MainPage> {
                                   passedID: item['_id'],
                                   passedLname: item['lname'],
                                   passedFname: item['fname'],
-                                  passedPhonenumber: item['phone_number'])))
+                                  passedPhonenumber: item['phone_number'][0],
+                                  )))
                       .then((value) => setState(() {
                             fetchData();
                           }))
