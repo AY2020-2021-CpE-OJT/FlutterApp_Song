@@ -100,12 +100,86 @@ void registerAPI(BuildContext context,String name, String password) async{
     "password" : password
   });
   var item = jsonDecode(response.body);
-  final toast = SnackBar(content: Text("Successfully registered!"));
-  ScaffoldMessenger.of(context).showSnackBar(toast);
+  if (item['message'] == "Successful"){
+    showSuccessDialog(context);
+  } else {
+    showAlertDialog(context);
+  }
   print(item);
 }
 
-showSnackbar(BuildContext context){
-  final toast = SnackBar(content: Text("Successfully registered!"));
-  ScaffoldMessenger.of(context).showSnackBar(toast);
+showSuccessDialog(BuildContext context) {
+  // set up the button
+  Widget okButton = TextButton(
+    child: Text("OK"),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Container(
+      child: Row(
+        children: [
+          Icon(
+            Icons.check,
+            color: Colors.green,
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          Text("Success!")
+        ],
+      ),
+    ),
+    content: Text("Successfully resgistered"),
+    actions: [okButton],
+  );
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
+
+
+showAlertDialog(BuildContext context) {
+  // set up the button
+  Widget okButton = TextButton(
+    child: Text("OK"),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Container(
+      child: Row(
+        children: [
+          Icon(
+            Icons.warning,
+            color: Colors.red,
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          Text("Warning!")
+        ],
+      ),
+    ),
+    content: Text("User is already exist!"),
+    actions: [okButton],
+  );
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
 }

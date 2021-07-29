@@ -109,20 +109,27 @@ Widget login(BuildContext context) {
 }
 
 void loginAPI(String name, String password, BuildContext context) async {
-  final url =  "https://contactbookapi.herokuapp.com/token/login";
+  final url = "https://contactbookapi.herokuapp.com/token/login";
   final response = await http.post(Uri.parse(url),body: {
     'name' : name,
     'password' : password
   });
   var item = jsonDecode(response.body);
   if (item['user']['message'] != "User doesn't Exist!"){
+    showSnackbar(context, "Welcome! $name");
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => MainPage(token: item['token'],)));
   } else {
     showAlertDialog(context);
   }
-
 }
+
+
+showSnackbar(BuildContext context,String message){
+  final toast = SnackBar(content: Text("$message"));
+  ScaffoldMessenger.of(context).showSnackBar(toast);
+}
+
 
 showAlertDialog (BuildContext context){
   // set up the button

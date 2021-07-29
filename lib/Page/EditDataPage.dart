@@ -10,9 +10,9 @@ final controllerThree = TextEditingController();
 
 class edit extends StatelessWidget {
   //contain the passed data
-  final String passedID,passedLname,passedFname,passedPhonenumber;
+  final String passedID,passedLname,passedFname,passedPhonenumber,token;
   //get the data
-  const edit({Key? key, required this.passedID, required this.passedLname,required this.passedFname, required this.passedPhonenumber}) : super(key: key);
+  const edit({Key? key, required this.passedID, required this.passedLname,required this.passedFname, required this.passedPhonenumber, required this.token}) : super(key: key);
   //url
 
   //getting data from the PhoneBook page
@@ -26,12 +26,12 @@ class edit extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: input(context,passedID,passedFname,passedLname,passedPhonenumber),
+      body: input(context,passedID,passedFname,passedLname,passedPhonenumber,token),
     );
   }
 }
 
-Widget input(BuildContext context,String passedID, String passedFname, String passedLname, String passedPhonenumber) {
+Widget input(BuildContext context,String passedID, String passedFname, String passedLname, String passedPhonenumber,String token) {
   return Center(
     child: Container(
       alignment: Alignment.topCenter,
@@ -55,6 +55,7 @@ Widget input(BuildContext context,String passedID, String passedFname, String pa
                           icon: Icon(Icons.phone,color: Colors.pink),
                           hintText: passedPhonenumber,
                           hintStyle: TextStyle(color: Colors.grey)),
+                      keyboardType: TextInputType.number,
                       controller: controllerThree,
                     ),
                   ),
@@ -92,7 +93,7 @@ Widget input(BuildContext context,String passedID, String passedFname, String pa
                     print("$fname $lname \n$phone_number");
 
                     //updata data
-                    updateData(context,passedID,lname, fname, phone_number);
+                    updateData(context,passedID,lname, fname, phone_number,token);
 
 
                     //clear the text feild
@@ -150,14 +151,14 @@ Widget insertName(String lname, String fname,) {
 }
 
 //Update
-void updateData(BuildContext context,String id, String lname,String fname, String phone_number) async {
-  final url = "https://enigmatic-fjord-21038.herokuapp.com/update/$id";
+void updateData(BuildContext context,String id, String lname,String fname, String phone_number,String token) async {
+  final url = "https://contactbookapi.herokuapp.com/update/$id";
 
   final response = await http.patch(Uri.parse(url),body: {
     "lname" : lname,
     "fname" : fname,
     "phone_number" : phone_number
-   },//headers: {"Authorization": "Bearer $token"}
+   },headers: {"Authorization": "Bearer $token"}
   );
 
   if (response.statusCode == 200) {

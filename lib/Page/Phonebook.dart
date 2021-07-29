@@ -246,7 +246,8 @@ class _MainPageState extends State<MainPage> {
                                   passedID: item['_id'],
                                   passedLname: item['lname'],
                                   passedFname: item['fname'],
-                                  passedPhonenumber: item['phone_number'][0],
+                                  passedPhonenumber: item['phone_number'],
+                                  token: widget.token,
                                   )))
                       .then((value) => setState(() {
                             fetchData();
@@ -281,9 +282,17 @@ class _MainPageState extends State<MainPage> {
                       SizedBox(height: 10),
 
                       //display phone number
-                      Text(
-                        phoneNumber.toString().replaceAll('[', '📞 ').replaceAll(',', '\n📞 ').replaceAll(']', ' '),
-                        style: TextStyle(color: Colors.grey),
+                      Container(
+                        child: Row(
+                          children: [
+                            Icon(Icons.local_phone_rounded),
+                            SizedBox(width: 8,),
+                            Text(
+                              phoneNumber,//.toString().replaceAll('[', '📞 ').replaceAll(',', '\n📞 ').replaceAll(']', ' '),
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ],
+                        ),
                       )
                     ],
                   ),
