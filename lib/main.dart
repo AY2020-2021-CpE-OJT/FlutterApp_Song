@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:task3_3/Page/Phonebook.dart';
 import 'Page/Login Page.dart';
 
 void main() {
@@ -14,16 +13,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Phone Book",
-      theme: ThemeData(
-        primarySwatch: Colors.pink
-      ),
-
-      home: LoginPage()  //LoginPage(),
-    );
+        title: "Phone Book",
+        theme: ThemeData(primarySwatch: Colors.pink),
+        home: LoginPage() //LoginPage(),
+        );
   }
 }

@@ -7,8 +7,7 @@ import '../Page/EditDataPage.dart';
 import 'package:animations/animations.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-RefreshController _refreshController =
-RefreshController(initialRefresh: false);
+RefreshController _refreshController = RefreshController(initialRefresh: false);
 
 //Make class to restore the Data
 class MainPage extends StatefulWidget {
@@ -76,9 +75,8 @@ class _MainPageState extends State<MainPage> {
         openBuilder: (context, _) => add_new(token: widget.token),
       );
 
-
   //refresh related function
-  void _onRefresh() async{
+  void _onRefresh() async {
     // monitor network fetch
     await Future.delayed(Duration(milliseconds: 0));
     setState(() {
@@ -89,12 +87,12 @@ class _MainPageState extends State<MainPage> {
   }
 
   //refresh related function
-  void _onLoading() async{
+  void _onLoading() async {
     // monitor network fetch
     await Future.delayed(Duration(milliseconds: 400));
-      setState(() {
-        fetchData();
-      });
+    setState(() {
+      fetchData();
+    });
     _refreshController.loadComplete();
   }
 
@@ -106,8 +104,8 @@ class _MainPageState extends State<MainPage> {
           title: Text("Phone Book"),
         ),
         body:
-        //refresh
-        SmartRefresher(
+            //refresh
+            SmartRefresher(
           enablePullDown: true,
           enablePullUp: false,
           controller: _refreshController,
@@ -115,7 +113,8 @@ class _MainPageState extends State<MainPage> {
           onLoading: _onLoading,
 
           //showing data
-          child: dataList(),),
+          child: dataList(),
+        ),
         //dataList(),
         backgroundColor: Colors.grey[400],
         floatingActionButton: FAB(context));
@@ -130,22 +129,20 @@ class _MainPageState extends State<MainPage> {
         ),
       );
     }
-    return
-        ListView.builder(
-            itemCount: data.length,
-            itemBuilder: (context, index) {
-              return individualData(data[index]);
-            });
+    return ListView.builder(
+        itemCount: data.length,
+        itemBuilder: (context, index) {
+          return individualData(data[index]);
+        });
   }
-
 
   //contain data
   Widget individualData(item) {
     var fullName = item['fname'] + " " + item['lname'];
     var phoneNumber = item['phone_number'];
 
-  //Snack bar
-    showSnackbar(BuildContext context,String message){
+    //Snack bar
+    showSnackbar(BuildContext context, String message) {
       final toast = SnackBar(content: Text("$message"));
       ScaffoldMessenger.of(context).showSnackBar(toast);
     }
@@ -234,24 +231,24 @@ class _MainPageState extends State<MainPage> {
           ),
         ),
         onDismissed: (DismissDirection direction) => {
-              if (direction == DismissDirection.endToStart){
-                showAlertDialog(context, item['_id'], widget.token),
+              if (direction == DismissDirection.endToStart)
+                {
+                  showAlertDialog(context, item['_id'], widget.token),
                 }
               else
                 {
                   Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => edit(
-                                  passedID: item['_id'],
-                                  passedLname: item['lname'],
-                                  passedFname: item['fname'],
-                                  passedPhonenumber: item['phone_number'],
-                                  token: widget.token,
-                                  )))
-                      .then((value) => setState(() {
-                            fetchData();
-                          }))
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => edit(
+                                passedID: item['_id'],
+                                passedLname: item['lname'],
+                                passedFname: item['fname'],
+                                passedPhonenumber: item['phone_number'],
+                                token: widget.token,
+                              ))).then((value) => setState(() {
+                        fetchData();
+                      }))
                 }
             },
         child: Card(
@@ -285,10 +282,18 @@ class _MainPageState extends State<MainPage> {
                       Container(
                         child: Row(
                           children: [
-                            Icon(Icons.local_phone_rounded),
-                            SizedBox(width: 8,),
+                            // Icon(Icons.local_phone_rounded),
+                            SizedBox(
+                              width: 8,
+                            ),
                             Text(
-                              phoneNumber,//.toString().replaceAll('[', '📞 ').replaceAll(',', '\n📞 ').replaceAll(']', ' '),
+                              phoneNumber
+                                  .toString()
+                                  .replaceAll('[', '')
+                                  .replaceAll(',', '\n📞 ')
+                                  .replaceAll(']', ' ')
+                                  .replaceAll('{', '📞 ')
+                                  .replaceAll('}', ' '),
                               style: TextStyle(color: Colors.grey),
                             ),
                           ],
