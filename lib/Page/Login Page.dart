@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'Phonebook.dart';
 import 'registerPage.dart';
 
-var name , password;
-final nameController = TextEditingController(), passwordController = TextEditingController();
-
+var name, password;
+final nameController = TextEditingController(),
+    passwordController = TextEditingController();
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -46,7 +46,7 @@ Widget login(BuildContext context) {
                 Container(
                     width: 300,
                     child: (TextField(
-                      decoration: InputDecoration(hintText: "Enter your name"),
+                      decoration: InputDecoration(labelText: "Name"),
                       controller: nameController,
                     ))),
               ],
@@ -67,8 +67,7 @@ Widget login(BuildContext context) {
                   //Enter password
                   width: 300,
                   child: (TextField(
-                    decoration:
-                        InputDecoration(hintText: "Enter your password"),
+                    decoration: InputDecoration(labelText: "Password"),
                     obscureText: true,
                     controller: passwordController,
                   )),
@@ -79,16 +78,16 @@ Widget login(BuildContext context) {
           SizedBox(height: 20),
           //Login button
           Container(
-            child: ConstrainedBox(constraints: BoxConstraints.tightFor(width: 350, height: 40),
+            child: ConstrainedBox(
+              constraints: BoxConstraints.tightFor(width: 350, height: 40),
               child: ElevatedButton(
-                onPressed: (){
+                onPressed: () {
                   name = nameController.text;
                   password = passwordController.text;
                   print(name + " " + password);
                   loginAPI(name, password, context);
                 },
                 child: Text("Login"),
-
               ),
             ),
           ),
@@ -96,12 +95,18 @@ Widget login(BuildContext context) {
 
           //Register
           TextButton(
-            onPressed: () { Navigator.push(
-                context, MaterialPageRoute(builder: (context) => register())); },
-            child: Text("Sign up",style: TextStyle(decoration: TextDecoration.underline, color: Colors.blue, fontSize: 20),),
-
+            onPressed: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => register()));
+            },
+            child: Text(
+              "Sign up",
+              style: TextStyle(
+                  decoration: TextDecoration.underline,
+                  color: Colors.blue,
+                  fontSize: 20),
+            ),
           )
-          
         ],
       ),
     ),
@@ -110,32 +115,34 @@ Widget login(BuildContext context) {
 
 void loginAPI(String name, String password, BuildContext context) async {
   final url = "https://contactbookapi.herokuapp.com/token/login";
-  final response = await http.post(Uri.parse(url),body: {
-    'name' : name,
-    'password' : password
-  });
+  final response = await http
+      .post(Uri.parse(url), body: {'name': name, 'password': password});
   var item = jsonDecode(response.body);
-  if (item['user']['message'] != "User doesn't Exist!"){
+  if (item['user']['message'] != "User doesn't Exist!") {
     showSnackbar(context, "Welcome! $name");
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => MainPage(token: item['token'],)));
+        context,
+        MaterialPageRoute(
+            builder: (context) => MainPage(
+                  token: item['token'],
+                )));
   } else {
     showAlertDialog(context);
   }
 }
 
-
-showSnackbar(BuildContext context,String message){
+showSnackbar(BuildContext context, String message) {
   final toast = SnackBar(content: Text("$message"));
   ScaffoldMessenger.of(context).showSnackBar(toast);
 }
 
-
-showAlertDialog (BuildContext context){
+showAlertDialog(BuildContext context) {
   // set up the button
   Widget okButton = TextButton(
     child: Text("OK"),
-    onPressed: () { Navigator.pop(context); },
+    onPressed: () {
+      Navigator.pop(context);
+    },
   );
 
   // set up the AlertDialog
@@ -143,13 +150,17 @@ showAlertDialog (BuildContext context){
     title: Container(
       child: Row(
         children: [
-          Icon(Icons.warning,color: Colors.yellow,),
-          SizedBox(width: 10,),
+          Icon(
+            Icons.warning,
+            color: Colors.yellow,
+          ),
+          SizedBox(
+            width: 10,
+          ),
           Text("Warning!")
         ],
       ),
     ),
-
     content: Text("User is not Exist!"),
     actions: [
       okButton,
