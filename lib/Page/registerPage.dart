@@ -1,10 +1,8 @@
-import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
 final nameController = TextEditingController();
 final passwordController = TextEditingController();
-var name,password;
+var name, password;
 
 class register extends StatelessWidget {
   const register({Key? key}) : super(key: key);
@@ -62,7 +60,7 @@ Widget Register(BuildContext context) {
                   width: 300,
                   child: (TextField(
                     decoration:
-                    InputDecoration(hintText: "Enter your password"),
+                        InputDecoration(hintText: "Enter your password"),
                     controller: passwordController,
                   )),
                 )
@@ -72,15 +70,15 @@ Widget Register(BuildContext context) {
           SizedBox(height: 20),
           //Login button
           Container(
-            child: ConstrainedBox(constraints: BoxConstraints.tightFor(width: 350, height: 40),
+            child: ConstrainedBox(
+              constraints: BoxConstraints.tightFor(width: 350, height: 40),
               child: ElevatedButton(
-                onPressed: (){
+                onPressed: () {
                   name = nameController.text;
                   password = passwordController.text;
                   print(name + " " + password);
                 },
                 child: Text("Sign up"),
-
               ),
             ),
           ),

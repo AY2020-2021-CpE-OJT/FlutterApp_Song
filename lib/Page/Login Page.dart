@@ -1,13 +1,8 @@
-import 'dart:convert';
-import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
+
+import '../Firebase/user.dart';
 import 'Phonebook.dart';
-import 'registerPage.dart';
-
-var name , password;
-final nameController = TextEditingController(), passwordController = TextEditingController();
-
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -15,144 +10,124 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Log in / Sign in"),
-        centerTitle: true,
-      ),
-      body: login(context),
-    );
+        appBar: AppBar(
+          title: Text("Log in"),
+          titleTextStyle: TextStyle(fontSize: 30),
+          centerTitle: true,
+        ),
+        body: _Login());
   }
 }
 
-Widget login(BuildContext context) {
-  return Center(
-    child: Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Alert
-          Text(""),
+GlobalKey formKey = GlobalKey<FormState>();
 
-          Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                //Enter username icon
-                Icon(Icons.person),
-                SizedBox(
-                  width: 10,
-                ),
-                //Enter name
-                Container(
-                    width: 300,
-                    child: (TextField(
-                      decoration: InputDecoration(hintText: "Enter your name"),
-                      controller: nameController,
+class _Login extends StatefulWidget {
+  const _Login({Key? key}) : super(key: key);
+
+  @override
+  State<_Login> createState() => _LoginState();
+}
+
+class _LoginState extends State<_Login> {
+  TextEditingController usernameController = TextEditingController(),
+      passwordController = TextEditingController();
+  bool showPassword = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        child: Form(
+      key: formKey,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Username
+            SizedBox(
+                width: 300,
+                child: TextFormField(
+                  controller: usernameController,
+                  decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.person),
+                      hintText: "Enter username"),
+                )),
+
+            //
+            SizedBox(
+              height: 30,
+            ),
+
+            // Password
+            SizedBox(
+                width: 300,
+                child: TextFormField(
+                  controller: passwordController,
+                  obscureText: showPassword,
+                  decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.vpn_key),
+
+                      // show password or not
+                      suffixIcon: showPassword == true
+                          ? IconButton(
+                              splashColor: Colors.transparent,
+                              onPressed: () => setState(() {
+                                showPassword = !showPassword;
+                              }),
+                              icon: Icon(Icons.visibility_off),
+                            )
+                          : IconButton(
+                              splashColor: Colors.transparent,
+                              onPressed: () => setState(() {
+                                showPassword = !showPassword;
+                              }),
+                              icon: Icon(Icons.visibility),
+                            ),
+                      hintText: "Enter password"),
+                )),
+
+            //
+            SizedBox(height: 40),
+
+            // Login button
+            SizedBox(
+                width: 200,
+                height: 50,
+                child: ElevatedButton(
+                    onPressed: () async {
+                      User user = User(
+                          username: usernameController.text,
+                          password: passwordController.text);
+                      bool success = await user.login();
+
+                      print(success);
+
+                      if (success) {
+                        Navigator.of(context).pushReplacement(PageTransition(
+                            child: MainPage(), type: PageTransitionType.fade));
+                      }
+                    },
+                    child: Text(
+                      "Log in",
+                      style: TextStyle(fontSize: 25),
                     ))),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.vpn_key),
-                SizedBox(
-                  width: 10,
-                ),
-                Container(
-                  //Enter password
-                  width: 300,
-                  child: (TextField(
-                    obscureText: true,
-                    decoration:
-                        InputDecoration(hintText: "Enter your password"),
-                    controller: passwordController,
-                  )),
-                )
-              ],
-            ),
-          ),
-          SizedBox(height: 20),
-          //Login button
-          Container(
-            child: ConstrainedBox(constraints: BoxConstraints.tightFor(width: 350, height: 40),
-              child: ElevatedButton(
-                onPressed: (){
-                  name = nameController.text;
-                  password = passwordController.text;
-                  print(name + " " + password);
-                  loginAPI(name, password, context);
-                },
-                child: Text("Login"),
 
-              ),
-            ),
-          ),
-          SizedBox(height: 15),
+            //
+            SizedBox(height: 40),
 
-          //Register
-          TextButton(
-            onPressed: () { Navigator.push(
-                context, MaterialPageRoute(builder: (context) => register())); },
-            child: Text("Sign up",style: TextStyle(decoration: TextDecoration.underline, color: Colors.blue, fontSize: 20),),
-
-          )
-          
-        ],
+            // Sign up
+            TextButton(
+                style: ButtonStyle(
+                    splashFactory: NoSplash.splashFactory,
+                    overlayColor:
+                        MaterialStateProperty.all(Colors.transparent)),
+                onPressed: () {},
+                child: Text(
+                  "Sign Up",
+                  style: TextStyle(decoration: TextDecoration.underline),
+                ))
+          ],
+        ),
       ),
-    ),
-  );
-}
-
-void loginAPI(String name, String password, BuildContext context) async {
-  final url =  "https://contactbookapi.herokuapp.com/token/login";
-  final response = await http.post(Uri.parse(url),body: {
-    'name' : name,
-    'password' : password
-  });
-  var item = jsonDecode(response.body);
-  if (item['user']['message'] != "User doesn't Exist!"){
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => MainPage(token: item['token'],)));
-  } else {
-    showAlertDialog(context);
+    ));
   }
-
-}
-
-showAlertDialog (BuildContext context){
-  // set up the button
-  Widget okButton = TextButton(
-    child: Text("OK"),
-    onPressed: () { Navigator.pop(context); },
-  );
-
-  // set up the AlertDialog
-  AlertDialog alert = AlertDialog(
-    title: Container(
-      child: Row(
-        children: [
-          Icon(Icons.warning,color: Colors.yellow,),
-          SizedBox(width: 10,),
-          Text("Warning!")
-        ],
-      ),
-    ),
-
-    content: Text("User is not Exist!"),
-    actions: [
-      okButton,
-    ],
-  );
-  // show the dialog
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return alert;
-    },
-  );
 }
