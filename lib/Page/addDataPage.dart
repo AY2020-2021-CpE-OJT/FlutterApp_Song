@@ -161,87 +161,6 @@ class _add_newState extends State<add_new> {
 
 }
 
-// Widget input(BuildContext context,String token) {
-//   return Center(
-//     child: Container(
-//       alignment: Alignment.topCenter,
-//       padding: EdgeInsets.fromLTRB(10, 30, 10, 0),
-//       child: Container(
-//           child: Column(children: [
-//             //Name container
-//             Container(
-//               child: insertName(context),
-//             ),
-//             SizedBox(height: 30),
-//             //Phone number container
-//             Container(
-//               child: Row(
-//                 mainAxisAlignment: MainAxisAlignment.center,
-//                 children: [
-//                   Container(
-//                     width: 300,
-//                     child: TextField(
-//                       decoration: InputDecoration(
-//                         labelText: "Phone number",
-//                           labelStyle: TextStyle(color: Colors.grey),
-//                           icon: PhoneIcon(context),
-//                           hintStyle: TextStyle(color: Colors.grey)),
-//                       controller: controllerThree,
-//                     ),
-//                   ),
-//                   SizedBox(width: 10,),
-//
-//                   //Add more phone number
-//                   Container(
-//                     width: 40,
-//                     height: 40,
-//                     child: Ink(
-//                     decoration: ShapeDecoration(
-//                       color: Colors.pink,
-//                       shape: CircleBorder(),
-//                     ),
-//                     child: IconButton(
-//                       icon: Icon(Icons.add,color: Colors.white,),
-//                       onPressed: () { phone_number.add(controllerThree.text); },
-//                     ),
-//                   ),)
-//                 ],
-//               ),
-//             ),
-//
-//             SizedBox(height: 20),
-//             // Add Button
-//             Container(
-//               child: ConstrainedBox(
-//                 constraints: BoxConstraints.tightFor(width: 400,height: 40),
-//                 child: ElevatedButton(
-//                   onPressed: (){
-//                     //get value from the text
-//                     fname = controllerOne.text;
-//                     lname = controllerTwo.text;
-//                     phone_number.add(controllerThree.text);
-//                     //print the inserted Data
-//                     print("$fname $lname \n$phone_number");
-//                     postData(lname, fname, phone_number,token);
-//
-//                     //clear the text feild
-//                     controllerOne.clear();
-//                     controllerTwo.clear();
-//                     controllerThree.clear();
-//
-//                     showSnackbar(context);
-//
-//                   },
-//                   child: Text("Add"),
-//                   style: ElevatedButton.styleFrom(primary: Colors.pink),
-//                 ),
-//               ),
-//             ),
-//           ]) //Column
-//       ),
-//     ),
-//   );
-// }
 
 showSnackbar(BuildContext context){
   final toast = SnackBar(content: Text("Successfully Add!"));
@@ -350,7 +269,7 @@ class _ContactColumnState extends State<ContactColumn> {
                 TextFormField(
                   decoration: InputDecoration(labelText: "Phone Number"),
                   keyboardType: TextInputType.number,
-                  controller: controllerThree[],
+                  // controller: controllerThree[],
                 )
               ],
             ),
