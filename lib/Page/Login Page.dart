@@ -3,7 +3,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:task3_3/Page/registerPage.dart';
 
 import '../Firebase/user.dart';
-import 'Phonebook.dart';
+import 'display_phoneBook.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -21,7 +21,7 @@ class LoginPage extends StatelessWidget {
 }
 
 // form state key
-final formKey = GlobalKey<FormState>();
+final _loginFormKey = GlobalKey<FormState>();
 
 class _Login extends StatefulWidget {
   const _Login({Key? key}) : super(key: key);
@@ -40,7 +40,7 @@ class _LoginState extends State<_Login> {
   Widget build(BuildContext context) {
     return Container(
         child: Form(
-      key: formKey,
+      key: _loginFormKey,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -122,11 +122,11 @@ class _LoginState extends State<_Login> {
                       setState(() => success);
 
                       // if the text field is validated
-                      if (formKey.currentState!.validate()) {
+                      if (_loginFormKey.currentState!.validate()) {
                         // if the login is successful
                         if (success!) {
                           Navigator.of(context).pushReplacement(PageTransition(
-                              child: MainPage(),
+                              child: PhoneBookDisplay(),
                               type: PageTransitionType.fade));
                         }
                       }
@@ -137,7 +137,7 @@ class _LoginState extends State<_Login> {
                     ))),
 
             //
-            SizedBox(height: 40),
+            SizedBox(height: 30),
 
             // Sign up
             TextButton(
@@ -151,7 +151,8 @@ class _LoginState extends State<_Login> {
                 },
                 child: Text(
                   "Sign Up",
-                  style: TextStyle(decoration: TextDecoration.underline),
+                  style: TextStyle(
+                      decoration: TextDecoration.underline, fontSize: 30),
                 ))
           ],
         ),
