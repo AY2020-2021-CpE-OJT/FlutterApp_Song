@@ -1,298 +1,333 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:page_transition/page_transition.dart';
+import 'package:task3_3/Firebase/phone_book.dart';
+import 'package:task3_3/Page/display_phoneBook.dart';
 
-var lname, fname;
-List phone_number = [];
+GlobalKey _formKey = GlobalKey<FormState>();
 
-final controllerOne = TextEditingController();
-final controllerTwo = TextEditingController();
-List<TextEditingController> controllerThree = <TextEditingController>[
-  TextEditingController()
-];
-
-class add_new extends StatefulWidget {
-  final token;
-  const add_new({Key? key, this.token}) : super(key: key);
+class AddNewContact extends StatefulWidget {
+  const AddNewContact({Key? key}) : super(key: key);
 
   @override
-  _add_newState createState() => _add_newState();
+  State<AddNewContact> createState() => _AddNewContactState();
 }
 
-class _add_newState extends State<add_new> {
-  int _count = 1;
+class _AddNewContactState extends State<AddNewContact> {
+  //
+  List phoneNumber = [];
+  int phoneNumberListLength = 1;
+  //
+  TextEditingController firstNameController = TextEditingController(),
+      lastNameController = TextEditingController();
+  List<TextEditingController> phoneNumberController = [TextEditingController()];
 
+  //
   @override
   Widget build(BuildContext context) {
-    List<Widget> _phoneNumberField =
-        new List.generate(_count, (int i) => new ContactColumn());
-
     return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context);
+      appBar: AppBar(
+        title: Text(
+          "New Contact",
+          style: TextStyle(fontSize: 20),
+        ),
+        centerTitle: true,
+
+        // Add
+        actions: [
+          TextButton(
+              onPressed: () {
+                // create instanse of PhoneBook
+                PhoneBook phoneBook = PhoneBook();
+
+                // Add new contact
+                phoneBook.addData(lastNameController.text,
+                    firstNameController.text, phoneNumberController);
+
+                // show toast message
+                _showToast(context, "Successfuly add new contact");
+
+                // go back to the main page
+                Future.delayed(
+                  const Duration(seconds: 1),
+                  () => Navigator.of(context).pushReplacement(PageTransition(
+                      child: PhoneBookDisplay(),
+                      type: PageTransitionType.topToBottom)),
+                );
+              },
+              child: Text("Add",
+                  style: TextStyle(fontSize: 20, color: Colors.white)))
+        ],
+      ),
+
+      //
+      body: Center(
+        child: Column(
+          children: [
+            //
+            Spacer(
+              flex: 1,
+            ),
+
+            // Avatar
+            SizedBox(
+              width: 100,
+              height: 100,
+              child: CircleAvatar(
+                child: Icon(Icons.person, size: 70),
+              ),
+            ),
+
+            // name, phone number enter
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  //
+                  SizedBox(
+                    height: 15,
+                  ),
+
+                  //
+                  name(),
+
+                  //
+                  SizedBox(height: 30),
+
+                  // Phone Number Text
+                  Padding(
+                    padding: const EdgeInsets.only(left: 30),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Phone number",
+                        style: TextStyle(
+                            fontSize: 30, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+
+                  phone_number(phoneNumberListLength)
+                ],
+              ),
+            ),
+
+            //
+            Spacer(
+              flex: 2,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget name() {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.7,
+      child: Column(
+        children: [
+          // Last name
+          TextFormField(
+            decoration: InputDecoration(labelText: "Last name"),
+            controller: lastNameController,
+            validator: (last_name) {
+              if (last_name == "") {
+                return "Please enter the last name";
+              }
+              return null;
             },
           ),
-          centerTitle: true,
-          title: Text(
-            "Adding new Contact",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        body: //input(context,widget.token),
-            LayoutBuilder(builder: (context, constraint) {
-          return Center(
-              child: Container(
-            padding: EdgeInsets.only(top: 70),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                // Name
-                Container(
-                  child: insertName(context),
-                ),
 
-                Divider(
-                  color: Colors.pink,
-                  thickness: 3,
-                  height: 30,
-                  indent: 10,
-                ),
+          //
+          SizedBox(height: 20),
 
-                //Phone Number
-                Container(
-                  height: 100.0,
-                  child: Row(
-                    children: [
-                      Container(
-                        child: new ListView(
-                          children: _phoneNumberField,
-                          scrollDirection: Axis.vertical,
-                        ),
-                        width: 390,
-                      ),
-                    ],
-                  ),
-                ),
-
-                SizedBox(
-                  height: 10,
-                ),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25),
-                          color: Colors.pink),
-                      child: IconButton(
-                        onPressed: () {
-                          _addNewContact();
-                          phone_number.add(controllerThree[_count].text);
-                          print(phone_number);
-                        },
-                        icon: Icon(
-                          Icons.add,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25),
-                          color: Colors.pink),
-                      child: IconButton(
-                        onPressed: () {
-                          if (_count > 1) {
-                            _deleteContact();
-                          }
-                        },
-                        icon: Text(
-                          "ㅡ",
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                  ],
-                ),
-
-                SizedBox(
-                  height: 20,
-                ),
-
-                //Save Button
-                Container(
-                  child: ConstrainedBox(
-                    constraints:
-                        BoxConstraints.tightFor(width: 350, height: 40),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        //get value from the text
-                        fname = controllerOne.text;
-                        lname = controllerTwo.text;
-                        phone_number.add(controllerThree[_count].text);
-                        //print the inserted Data
-                        print("$fname $lname \n$phone_number");
-                        postData(lname, fname, phone_number, widget.token);
-
-                        //clear the text feild
-                        controllerOne.clear();
-                        controllerTwo.clear();
-                        controllerThree.clear();
-
-                        showSnackbar(context);
-                      },
-                      child: Text("Add"),
-                      style: ElevatedButton.styleFrom(primary: Colors.pink),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ));
-        }));
-  }
-
-  void _addNewContact() {
-    setState(() {
-      _count += 1;
-    });
-  }
-
-  void _deleteContact() {
-    setState(() {
-      _count -= 1;
-    });
-  }
-}
-
-showSnackbar(BuildContext context) {
-  final toast = SnackBar(content: Text("Successfully Add!"));
-  ScaffoldMessenger.of(context).showSnackBar(toast);
-}
-
-Widget insertName(BuildContext context) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Container(
-          padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-          child: personIcon(context)),
-
-      SizedBox(width: 17),
-      //name
-      Container(
-          width: 310,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextField(
-                decoration: InputDecoration(
-                    labelText: "First name",
-                    labelStyle: TextStyle(color: Colors.grey),
-                    hintStyle: TextStyle(color: Colors.grey[600])),
-                controller: controllerOne,
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              TextField(
-                decoration: InputDecoration(
-                    labelText: "Last name",
-                    labelStyle: TextStyle(color: Colors.grey),
-                    hintStyle: TextStyle(color: Colors.grey[600])),
-                controller: controllerTwo,
-              )
-            ],
-          )),
-    ],
-  );
-}
-
-Widget personIcon(BuildContext context) {
-  return Icon(Icons.person_add, color: Colors.pink);
-}
-
-Widget PhoneIcon(BuildContext context) {
-  return Icon(Icons.phone, color: Colors.pink);
-}
-
-void postData(
-    String lname, String fname, List phone_number, String token) async {
-  final url = "https://contactbookapi.herokuapp.com/new";
-
-  //call http
-  final response = await http.post(Uri.parse(url),
-      body: {"lname": lname, "fname": fname, "phone_number": phone_number},
-      headers: {"Authorization": "Bearer $token"});
-
-  if (response.statusCode == 201) {
-    final String responseString = response.body;
-    print(responseString);
-  }
-}
-
-class ContactColumn extends StatefulWidget {
-  const ContactColumn({Key? key}) : super(key: key);
-
-  @override
-  _ContactColumnState createState() => _ContactColumnState();
-}
-
-class _ContactColumnState extends State<ContactColumn> {
-  int controller = 0;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    this.setController();
-  }
-
-  setController() async {
-    setState(() {
-      controller += 1;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 170,
-      child: Row(
-        children: [
-          Padding(padding: EdgeInsets.only(left: 23)),
-          Icon(
-            Icons.phone,
-            color: Colors.pink,
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 15),
-          ),
-          Container(
-            width: 310,
-            child: Column(
-              children: <Widget>[
-                TextFormField(
-                  decoration: InputDecoration(labelText: "Phone Number"),
-                  keyboardType: TextInputType.number,
-                  // controller: controllerThree[],
-                )
-              ],
-            ),
-          ),
+          // First name
+          TextFormField(
+              controller: firstNameController,
+              decoration: InputDecoration(labelText: "First name"),
+              validator: (first_name) {
+                if (first_name == "") {
+                  return "Please enter the first name";
+                }
+                return null;
+              })
         ],
       ),
     );
   }
+
+  Widget phone_number(int length) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 500),
+      width: MediaQuery.of(context).size.width * 0.8,
+      child: ListView.builder(
+        itemCount: length,
+        shrinkWrap: true,
+        itemBuilder: (BuildContext context, int index) {
+          // If there is only one phone number
+          if (length == 1) {
+            return SizedBox(
+                child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // phone number input
+                Center(
+                  child: SizedBox(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.6,
+                          child: TextFormField(
+                            controller: phoneNumberController[index],
+                            decoration: InputDecoration(
+                                prefixIcon: Icon(Icons.phone),
+                                hintText: "Enter phone number"),
+                            validator: (phoneNumber) {
+                              if (phoneNumber == "") {
+                                return "Please enter phone number or remove";
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+
+                        // Add more phone number
+                        IconButton(
+                            highlightColor: Colors.transparent,
+                            onPressed: () {
+                              setState(() {
+                                phoneNumberListLength++;
+                                phoneNumberController
+                                    .add(TextEditingController());
+                              });
+                            },
+                            icon: Icon(
+                              Icons.add,
+                              color: Colors.blue,
+                            ))
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ));
+          }
+
+          if (index != length - 1) {
+            return SizedBox(
+              child: Center(
+                child: SizedBox(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.6,
+                        child: TextFormField(
+                          controller: phoneNumberController[index],
+                          decoration: InputDecoration(
+                              prefixIcon: Icon(Icons.phone),
+                              hintText: "Enter phone number"),
+                          validator: (phoneNumber) {
+                            if (phoneNumber == "") {
+                              return "Please enter phone number or remove";
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+
+                      // remove phone number
+                      IconButton(
+                          onPressed: () {
+                            setState(() {
+                              phoneNumberListLength--;
+                              phoneNumberController.removeLast();
+                            });
+                          },
+                          icon: Icon(
+                            Icons.remove,
+                            color: Colors.red,
+                          )),
+
+                      // Add more phone number
+                      IconButton(
+                          onPressed: null,
+                          icon: Icon(
+                            Icons.add,
+                            color: Colors.transparent,
+                          )),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+          return SizedBox(
+            child: Center(
+              child: SizedBox(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      child: TextFormField(
+                        controller: phoneNumberController[index],
+                        decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.phone),
+                            hintText: "Enter phone number"),
+                        validator: (phoneNumber) {
+                          if (phoneNumber == "") {
+                            return "Please enter phone number or remove";
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+
+                    // remove phone number
+                    IconButton(
+                        onPressed: () {
+                          setState(() {
+                            phoneNumberListLength--;
+                            phoneNumberController.removeLast();
+                          });
+                        },
+                        icon: Icon(
+                          Icons.remove,
+                          color: Colors.red,
+                        )),
+
+                    // Add more phone number
+                    IconButton(
+                        splashColor: Colors.transparent,
+                        onPressed: () {
+                          setState(() {
+                            phoneNumberListLength++;
+                            phoneNumberController.add(TextEditingController());
+                          });
+                        },
+                        icon: Icon(
+                          Icons.add,
+                          color: Colors.blue,
+                        )),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+void _showToast(BuildContext context, String text) {
+  final scaffold = ScaffoldMessenger.of(context);
+  scaffold.showSnackBar(
+    SnackBar(
+      behavior: SnackBarBehavior.floating,
+      content: Text(text),
+    ),
+  );
 }

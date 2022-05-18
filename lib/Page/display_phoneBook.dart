@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:task3_3/Page/Login%20Page.dart';
+import 'package:task3_3/Page/addDataPage.dart';
 import '../Firebase/phone_book.dart';
 
 class PhoneBookDisplay extends StatelessWidget {
@@ -36,7 +37,10 @@ class PhoneBookDisplay extends StatelessWidget {
       // FAB
       floatingActionButton: FloatingActionButton(
         // go to add phone data page
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).push(PageTransition(
+              child: AddNewContact(), type: PageTransitionType.bottomToTop));
+        },
         child: Icon(Icons.add),
       ),
 
