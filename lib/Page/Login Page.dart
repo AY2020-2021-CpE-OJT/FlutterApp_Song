@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:task3_3/Page/registerPage.dart';
 
 import '../Firebase/user.dart';
 import 'Phonebook.dart';
@@ -19,7 +20,8 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-GlobalKey formKey = GlobalKey<FormState>();
+// form state key
+final formKey = GlobalKey<FormState>();
 
 class _Login extends StatefulWidget {
   const _Login({Key? key}) : super(key: key);
@@ -31,7 +33,8 @@ class _Login extends StatefulWidget {
 class _LoginState extends State<_Login> {
   TextEditingController usernameController = TextEditingController(),
       passwordController = TextEditingController();
-  bool showPassword = false;
+  bool obscure = true;
+  bool? success;
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +53,12 @@ class _LoginState extends State<_Login> {
                   decoration: InputDecoration(
                       prefixIcon: Icon(Icons.person),
                       hintText: "Enter username"),
+                  validator: (username) {
+                    if (username == "") {
+                      return "Please enter a username";
+                    }
+                    return null;
+                  },
                 )),
 
             //
@@ -62,27 +71,36 @@ class _LoginState extends State<_Login> {
                 width: 300,
                 child: TextFormField(
                   controller: passwordController,
-                  obscureText: showPassword,
+                  obscureText: obscure,
                   decoration: InputDecoration(
                       prefixIcon: Icon(Icons.vpn_key),
 
                       // show password or not
-                      suffixIcon: showPassword == true
+                      suffixIcon: obscure == false
                           ? IconButton(
                               splashColor: Colors.transparent,
                               onPressed: () => setState(() {
-                                showPassword = !showPassword;
+                                obscure = !obscure;
                               }),
                               icon: Icon(Icons.visibility_off),
                             )
                           : IconButton(
                               splashColor: Colors.transparent,
                               onPressed: () => setState(() {
-                                showPassword = !showPassword;
+                                obscure = !obscure;
                               }),
                               icon: Icon(Icons.visibility),
                             ),
-                      hintText: "Enter password"),
+                      hintText: "Enter password",
+                      errorText: success == false
+                          ? "User is not exist or wrong password."
+                          : null),
+                  validator: (password) {
+                    if (password == "") {
+                      return "Please enter a password";
+                    }
+                    return null;
+                  },
                 )),
 
             //
@@ -97,13 +115,20 @@ class _LoginState extends State<_Login> {
                       User user = User(
                           username: usernameController.text,
                           password: passwordController.text);
-                      bool success = await user.login();
 
-                      print(success);
+                      success = await user.login();
 
-                      if (success) {
-                        Navigator.of(context).pushReplacement(PageTransition(
-                            child: MainPage(), type: PageTransitionType.fade));
+                      // change the success value
+                      setState(() => success);
+
+                      // if the text field is validated
+                      if (formKey.currentState!.validate()) {
+                        // if the login is successful
+                        if (success!) {
+                          Navigator.of(context).pushReplacement(PageTransition(
+                              child: MainPage(),
+                              type: PageTransitionType.fade));
+                        }
                       }
                     },
                     child: Text(
@@ -120,7 +145,10 @@ class _LoginState extends State<_Login> {
                     splashFactory: NoSplash.splashFactory,
                     overlayColor:
                         MaterialStateProperty.all(Colors.transparent)),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(PageTransition(
+                      child: Register(), type: PageTransitionType.rightToLeft));
+                },
                 child: Text(
                   "Sign Up",
                   style: TextStyle(decoration: TextDecoration.underline),
