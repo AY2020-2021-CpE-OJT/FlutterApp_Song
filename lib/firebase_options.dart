@@ -26,15 +26,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -58,5 +52,25 @@ class DefaultFirebaseOptions {
     messagingSenderId: '174310550053',
     projectId: 'phonebook-1326b',
     storageBucket: 'phonebook-1326b.appspot.com',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyDX81Zxo8OyeywWl1TtPVb37dl2QriPH_Q',
+    appId: '1:174310550053:ios:cbb6d919858b7aea932dcc',
+    messagingSenderId: '174310550053',
+    projectId: 'phonebook-1326b',
+    storageBucket: 'phonebook-1326b.appspot.com',
+    iosClientId: '174310550053-q3mjs700abqnbkh84n1davf0v8en5rdj.apps.googleusercontent.com',
+    iosBundleId: 'com.example.flutterAppSong',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyDX81Zxo8OyeywWl1TtPVb37dl2QriPH_Q',
+    appId: '1:174310550053:ios:cbb6d919858b7aea932dcc',
+    messagingSenderId: '174310550053',
+    projectId: 'phonebook-1326b',
+    storageBucket: 'phonebook-1326b.appspot.com',
+    iosClientId: '174310550053-q3mjs700abqnbkh84n1davf0v8en5rdj.apps.googleusercontent.com',
+    iosBundleId: 'com.example.flutterAppSong',
   );
 }

@@ -19,12 +19,17 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
+Color seedColor = Colors.pink;
+
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         title: "Phone Book",
-        theme: ThemeData(primarySwatch: Colors.pink),
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+              seedColor: seedColor, brightness: Brightness.light),
+        ),
         home: LoginPage());
   }
 }

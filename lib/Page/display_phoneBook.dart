@@ -112,8 +112,8 @@ class __PhoneBookDataState extends State<_PhoneBookData> {
                                     .phoneBook[index]["phone_number"].length,
                                 itemBuilder: (BuildContext context,
                                     int phoneNumberIndex) {
-                                  return Text(phonebook.phoneBook[index]
-                                      ["phone_number"][phoneNumberIndex]);
+                                  return Text(
+                                      "☎ ${phonebook.phoneBook[index]["phone_number"][phoneNumberIndex]}");
                                 },
                               ),
                             )
