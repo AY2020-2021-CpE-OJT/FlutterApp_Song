@@ -159,7 +159,7 @@ class _AddNewContactState extends State<AddNewContact> {
   Widget phone_number(int length) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 500),
-      width: MediaQuery.of(context).size.width * 0.8,
+      width: MediaQuery.of(context).size.width * 0.9,
       child: ListView.builder(
         itemCount: length,
         shrinkWrap: true,
@@ -213,7 +213,8 @@ class _AddNewContactState extends State<AddNewContact> {
               ],
             ));
           }
-
+          
+          // if the index is not the last
           if (index != length - 1) {
             return SizedBox(
               child: Center(

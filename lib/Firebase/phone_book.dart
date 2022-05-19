@@ -8,7 +8,7 @@ class PhoneBook {
     phoneBook.clear();
     var data = await FirebaseFirestore.instance.collection('Phone Book').get();
     for (int i = 0; i < data.docs.length; i++) {
-      phoneBook.add(data.docs[i].data());
+      phoneBook.add(data.docs[i]);
     }
   }
 
@@ -36,12 +36,12 @@ class PhoneBook {
   }
 
   // remove data
-  Future<bool> removeData() async {
+  Future<bool> removeData(var data) async {
     return false;
   }
 
   // update data
-  Future<bool> updateData() async {
+  Future<bool> uapdateData(String id) async {
     return false;
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:task3_3/Page/EditDataPage.dart';
 import 'package:task3_3/Page/Login%20Page.dart';
 import 'package:task3_3/Page/addDataPage.dart';
 import '../Firebase/phone_book.dart';
@@ -105,7 +106,7 @@ class __PhoneBookDataState extends State<_PhoneBookData> {
 
                             // Phone numbers
                             SizedBox(
-                              width: 300,
+                              width: 150,
                               child: ListView.builder(
                                 shrinkWrap: true,
                                 itemCount: phonebook
@@ -118,7 +119,33 @@ class __PhoneBookDataState extends State<_PhoneBookData> {
                               ),
                             )
                           ]),
-                    )
+                    ),
+                    //
+                    Spacer(),
+
+                    // Edit button
+                    IconButton(
+                        onPressed: () {
+                          // got to edit page
+                          Navigator.of(context).push(PageTransition(
+                              child: EditContactPage(
+                                  document: phonebook.phoneBook[index]),
+                              type: PageTransitionType.rightToLeft));
+                        },
+                        icon: Icon(
+                          Icons.edit,
+                          size: 35,
+                          color: Colors.blue,
+                        )),
+
+                    // Delete button
+                    IconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.delete_forever,
+                          size: 35,
+                          color: Colors.red,
+                        ))
                   ],
                 ),
               ),
