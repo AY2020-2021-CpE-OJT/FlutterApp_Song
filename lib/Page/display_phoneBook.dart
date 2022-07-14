@@ -43,6 +43,7 @@ class PhoneBookDisplay extends StatelessWidget {
               child: AddNewContact(), type: PageTransitionType.bottomToTop));
         },
         child: Icon(Icons.add),
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
       ),
 
       //

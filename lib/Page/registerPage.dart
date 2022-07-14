@@ -83,6 +83,7 @@ class _RegisterState extends State<Register> {
             SizedBox(
                 width: 300,
                 child: TextFormField(
+                  obscureText: true,
                   decoration: InputDecoration(
                       prefixIcon: Icon(Icons.vpn_key),
                       hintText: "Enter password"),

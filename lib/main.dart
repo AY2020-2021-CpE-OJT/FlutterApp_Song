@@ -28,7 +28,9 @@ class _MyAppState extends State<MyApp> {
         title: "Phone Book",
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
-              seedColor: seedColor, brightness: Brightness.light),
+            seedColor: seedColor,
+            brightness: Brightness.light,
+          ),
         ),
         home: LoginPage());
   }
